@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Detección Cambios AWV</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h3 class="text-muted" style="text-align: center;">Módulo de Detección de Cambios AWV</h3>
+      <br>
+    </div>
+
+    <div class="jumbotron container-fluid" style="padding-top: 32px; padding-bottom: 32px;">
+      <div class="row">
+        <div id="old_rendered_page" name="old_rendered_page" class="col-sm-6">
+          <img src="{{url_for('static', filename='old_screenshot.png')}}" alt="old_rendered_page" class="img-thumbnail" style="margin: auto; display: block;" />
+        </div>
+
+        <div id="new_rendered_page" name="new_rendered_page" class="col-sm-6">
+          <img src="{{url_for('static', filename='new_screenshot.png')}}" alt="new_rendered_page" class="img-thumbnail" style="margin: auto; display: block;"/>
+        </div>
+      </div>
+
+      <div class="row" style="padding: 25px">
+      </div>
+
+      <div class="row">
+        <div id="block_text_change_percentage" name="block_text_change_percentage" class="col-sm">
+          <img src="{{url_for('static', filename='block_text_change_percentage.png')}}" alt="block_text_change_percentage" class="img-thumbnail" style="margin: auto; display: block; margin-bottom: 25px;" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-9">
+          <p class="h4 lead text-sm-center"><b>{{resultado}}</b></p>
+        </div>
+
+        <div class="col-sm-3">
+          <p><a href="/" class="btn btn-lg btn-success" role="button" style="float: right;">Retornar</a></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer" style="position: fixed; right: 0; bottom: 0">
+    <p style="text-align: right; padding-right: 10px;">&copy; Archivo Web Venezuela 2019</p>
+  </footer>
+</body>
