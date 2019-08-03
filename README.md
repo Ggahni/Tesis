@@ -2,7 +2,7 @@
 
 # Flaskapp
 
-### [__app.py__](**\_\_app.py\_\_**)
+### [app.py](**app.py**)
 Archivo principal, es el que debe ser ejecutado para levantar la aplicación
 
 ### **changeDetector-backup.py**
@@ -14,7 +14,7 @@ Versión actual del módulo de detección de cambios.
 ### **util.py**
 Módulo que permite la captura completa del sitio web en lugar de sólo la visualizada en el rendering original.
 
-### pycache
+### \_\_pycache\_\_
 Elementos de uso general de Python
 
 ### static
