@@ -2,7 +2,7 @@
 
 # Flaskapp
 
-### [app.py](**app.py**)
+### [Flask/app.py](**app.py**)
 Archivo principal, es el que debe ser ejecutado para levantar la aplicación
 
 ### **changeDetector-backup.py**
