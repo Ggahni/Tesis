@@ -2,7 +2,7 @@
 
 # Flaskapp
 
-### **\_\_app.py\_\_**
+### [__app.py__](**\_\_app.py\_\_**)
 Archivo principal, es el que debe ser ejecutado para levantar la aplicación
 
 ### **changeDetector-backup.py**
@@ -24,7 +24,7 @@ Se usan al momento del rendering de **_resultados.html_** de la siguiente manera
   2. **new_screenshot.png**: captura de pantalla de la versión que se está revisando del sitio web.
   3. **old_screenshot.png**: captura de pantalla de la versión almacenada contra la que se comparará para la detección de cambios.
 
-### templates 
+### templates
 Código de los sitios web que conforman parte de la aplicación, de la siguiente manera:
   1. **index.html**: interfaz principal de la aplicación, aquí se colocan los URL/ruta física de los sitios web a comparar.
   2. **new_site.html**: sitio web que se está comparando (versión actualizada) que se reconstruye y al que se le agrega un borde a los bloques que han sufrido algún cambio para facilitar la visualización de éstos.
