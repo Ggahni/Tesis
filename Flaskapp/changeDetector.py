@@ -40,7 +40,7 @@ def change_detector(p_url, url, caso):
     browser.get(p_url)
     p_html = browser.page_source
     # Se guarda un screenshot de la página en el lugar correspondiente
-    screenshot = util.fullpage_screenshot(browser, 'C:/Users/Luis/Desktop/Flaskapp/static/old_screenshot.png')
+    screenshot = util.fullpage_screenshot(browser, 'static/old_screenshot.png')
     browser.quit()
 
     # url = "https://www.w3schools.com/"
@@ -184,12 +184,22 @@ def change_detector(p_url, url, caso):
             performance =  difference
             plt.tick_params(axis='x', which='major', labelsize=5)
             plt.figure(figsize=(10,3.8))
-            plt.bar(y_pos, performance, align='edge', alpha=0.5)
+            barlist = plt.bar(y_pos,performance,align='center',alpha=0.5)
+
+            for i in range(0, len(barlist)):
+                height = barlist[i].get_height()
+                if height >= 50:
+                    barlist[i].set_color('r')
+                elif height >= 20 and height < 50:
+                    barlist[i].set_color('y')
+                elif height > 0 and height < 20:
+                    barlist[i].set_color('g')
+
             plt.xticks(y_pos, objects)
             plt.ylabel('% de cambios')
             plt.xlabel('ID de bloques')
             plt.title('Cambios por bloque de texto')
-            plt.savefig('C:/Users/Luis/Desktop/Flaskapp/static/block_text_change_percentage.png')
+            plt.savefig('static/block_text_change_percentage.png')
 
             for element in indices_cambios:
                 for element2 in salidafinal:
@@ -227,7 +237,7 @@ def change_detector(p_url, url, caso):
             # exec asyn
 
             # screenshot = browser.save_screenshot('my_screenshot.png')
-            screenshot = util.fullpage_screenshot(browser, 'C:/Users/Luis/Desktop/Flaskapp/static/new_screenshot.png')
+            screenshot = util.fullpage_screenshot(browser, 'static/new_screenshot.png')
             browser.quit()
             # Fin Screenshot
 
@@ -277,13 +287,19 @@ def change_detector(p_url, url, caso):
                 for item in sublist:
                     flatten80.append(item)
 
-            # Asignacion del peso
+            # Asignacion del peso cuantitativo
             porcentajes_cambios_ordenados.append(flatten20)
             porcentajes_cambios_ordenados.append(flatten80)
-
             cambio_peso_80 = statistics.mean(porcentajes_cambios_ordenados[0]) * 0.8
             cambio_peso_20 = statistics.mean(porcentajes_cambios_ordenados[1]) * 0.2
             cambio_total = cambio_peso_80 + cambio_peso_20
+
+            # Hacer cambio cualitativo también, usando la matriz hablada con Sanoja
+            # basada en puerto de visualización de ventana.
+            # Leyenda:
+            # Rojo: significativo
+            # Amarillo: medio
+            # Verde: cambio no significativo
 
             if cambio_total >= 50:
                 resultado = '¡Cambio significativo! Se debe almacenar la nueva versión\n'
@@ -291,16 +307,6 @@ def change_detector(p_url, url, caso):
                 resultado = '¡Cambio siginificativo! Se debe almacenar la nueva versión\n'
             else:
                 resultado = 'Cambio no significativo. La nueva versión no será almacenada\n'
-
-
-            # for i in dicttexts:
-            #     print(i['id'], end=" ")
-            #
-            # with open(r'Salida.txt', 'a') as salida:                                      # Funciona, solo texto
-            #     arguments = [url, savecsv]
-            #     salida.writelines(", ".join(map(str, arguments)) + '\n')
-            #
-            # print("\n")
 
             # Aqui se hacen las manipulaciones al codigo para agregar el marco rojo que detalla el div cambiado
             # Si hubo cambios resaltar usando el id que yo le otorgué para la búsqueda
@@ -311,25 +317,37 @@ def change_detector(p_url, url, caso):
 
             salida = salida + "<!DOCTYPE html>" + '\n' + "<html>" + '\n'
             head = str(head).replace('<head>', reemplazo)
-            salida = salida + head + '\n' + '<body>' + "\n"
+            salida = salida + head + '\n' + '<body>' + '\n'
 
             obj = list(range(len(difference)))
             objects = [x + 1 for x in obj]
             y_pos = np.arange(len(objects))
             performance =  difference
             plt.tick_params(axis='x', which='major', labelsize=5)
-            plt.figure(figsize=(10,3))
-            plt.bar(y_pos, performance, align='edge', alpha=0.5)
+            plt.figure(figsize=(10,3.8))
+            barlist = plt.bar(y_pos,performance,align='center',alpha=0.5)
+
+            for i in range(0, len(barlist)):
+                height = barlist[i].get_height()
+                if height >= 50:
+                    barlist[i].set_color('r')
+                elif height >= 20 and height < 50:
+                    barlist[i].set_color('y')
+                elif height > 0 and height < 20:
+                    barlist[i].set_color('g')
+
             plt.xticks(y_pos, objects)
             plt.ylabel('% de cambios')
+            plt.xlabel('ID de bloques')
             plt.title('Cambios por bloque de texto')
-            plt.savefig('C:/Users/Luis/Desktop/Flaskapp/static/block_text_change_percentage.png')
+            plt.savefig('static/block_text_change_percentage.png')
 
             for element in indices_cambios:
                 for element2 in salidafinal:
                     if element2['id'] == element:
                         if 'style' in element2['value']:
                             element2['value'] = element2['value'].replace('style="', 'style="border: 3px solid red; ', 1)
+                                                                # .replace('id-="')
                         else:
                             reemplazo_border = '< ' + ' style="border: 3px solid red;"'
                             element2['value'] = element2['value'].replace('<', reemplazo_border, 1)
@@ -340,6 +358,7 @@ def change_detector(p_url, url, caso):
 
             salida = salida + "</body>" + '\n'
             salida = salida + "</html>"
+
             url2 = url.replace('.html', '_updated.html')
             g = open(url2, "w", encoding="utf-8")
             g.write(salida)
@@ -355,12 +374,18 @@ def change_detector(p_url, url, caso):
             browser = webdriver.Chrome(options=alloptions)
             url_updated = 'file://'+url2
             browser.get(url_updated)
+
+            # exec asyn
+
             # screenshot = browser.save_screenshot('my_screenshot.png')
-            screenshot = util.fullpage_screenshot(browser, 'C:/Users/Luis/Desktop/Flaskapp/static/new_screenshot.png')
+            screenshot = util.fullpage_screenshot(browser, 'static/new_screenshot.png')
             browser.quit()
             # Fin Screenshot
 
             return resultado
+
+        # else:
+            # Otro caso
 
     else:
         for iterator in range(0, len(p_texts) - len(texts)):
@@ -403,13 +428,19 @@ def change_detector(p_url, url, caso):
                 for item in sublist:
                     flatten80.append(item)
 
-            # Asignacion del peso
+            # Asignacion del peso cuantitativo
             porcentajes_cambios_ordenados.append(flatten20)
             porcentajes_cambios_ordenados.append(flatten80)
-
             cambio_peso_80 = statistics.mean(porcentajes_cambios_ordenados[0]) * 0.8
             cambio_peso_20 = statistics.mean(porcentajes_cambios_ordenados[1]) * 0.2
             cambio_total = cambio_peso_80 + cambio_peso_20
+
+            # Hacer cambio cualitativo también, usando la matriz hablada con Sanoja
+            # basada en puerto de visualización de ventana.
+            # Leyenda:
+            # Rojo: significativo
+            # Amarillo: medio
+            # Verde: cambio no significativo
 
             if cambio_total >= 50:
                 resultado = '¡Cambio significativo! Se debe almacenar la nueva versión\n'
@@ -417,16 +448,6 @@ def change_detector(p_url, url, caso):
                 resultado = '¡Cambio siginificativo! Se debe almacenar la nueva versión\n'
             else:
                 resultado = 'Cambio no significativo. La nueva versión no será almacenada\n'
-
-
-            # for i in dicttexts:
-            #     print(i['id'], end=" ")
-            #
-            # with open(r'Salida.txt', 'a') as salida:                                      # Funciona, solo texto
-            #     arguments = [url, savecsv]
-            #     salida.writelines(", ".join(map(str, arguments)) + '\n')
-            #
-            # print("\n")
 
             # Aqui se hacen las manipulaciones al codigo para agregar el marco rojo que detalla el div cambiado
             # Si hubo cambios resaltar usando el id que yo le otorgué para la búsqueda
@@ -437,25 +458,37 @@ def change_detector(p_url, url, caso):
 
             salida = salida + "<!DOCTYPE html>" + '\n' + "<html>" + '\n'
             head = str(head).replace('<head>', reemplazo)
-            salida = salida + head + '\n' + '<body>' + "\n"
+            salida = salida + head + '\n' + '<body>' + '\n'
 
             obj = list(range(len(difference)))
             objects = [x + 1 for x in obj]
             y_pos = np.arange(len(objects))
             performance =  difference
             plt.tick_params(axis='x', which='major', labelsize=5)
-            plt.figure(figsize=(10,3))
-            plt.bar(y_pos, performance, align='edge', alpha=0.5)
+            plt.figure(figsize=(10,3.8))
+            barlist = plt.bar(y_pos,performance,align='center',alpha=0.5)
+
+            for i in range(0, len(barlist)):
+                height = barlist[i].get_height()
+                if height >= 50:
+                    barlist[i].set_color('r')
+                elif height >= 20 and height < 50:
+                    barlist[i].set_color('y')
+                elif height > 0 and height < 20:
+                    barlist[i].set_color('g')
+
             plt.xticks(y_pos, objects)
             plt.ylabel('% de cambios')
+            plt.xlabel('ID de bloques')
             plt.title('Cambios por bloque de texto')
-            plt.savefig('C:/Users/Luis/Desktop/Flaskapp/static/block_text_change_percentage.png')
+            plt.savefig('static/block_text_change_percentage.png')
 
             for element in indices_cambios:
                 for element2 in salidafinal:
                     if element2['id'] == element:
                         if 'style' in element2['value']:
                             element2['value'] = element2['value'].replace('style="', 'style="border: 3px solid red; ', 1)
+                                                                # .replace('id-="')
                         else:
                             reemplazo_border = '< ' + ' style="border: 3px solid red;"'
                             element2['value'] = element2['value'].replace('<', reemplazo_border, 1)
@@ -466,6 +499,7 @@ def change_detector(p_url, url, caso):
 
             salida = salida + "</body>" + '\n'
             salida = salida + "</html>"
+
             url2 = url.replace('.html', '_updated.html')
             g = open(url2, "w", encoding="utf-8")
             g.write(salida)
@@ -481,10 +515,16 @@ def change_detector(p_url, url, caso):
             browser = webdriver.Chrome(options=alloptions)
             url_updated = 'file://'+url2
             browser.get(url_updated)
+
+            # exec asyn
+
             # screenshot = browser.save_screenshot('my_screenshot.png')
-            screenshot = util.fullpage_screenshot(browser, 'C:/Users/Luis/Desktop/Flaskapp/static/new_screenshot.png')
+            screenshot = util.fullpage_screenshot(browser, 'static/new_screenshot.png')
             browser.quit()
             # Fin Screenshot
 
             return resultado
+
+        # else:
+            # Otro caso
     # bom.ciens.ucv.ve/dataset
