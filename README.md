@@ -1,13 +1,13 @@
 # Deteccion de Cambios Archivo Web Venezuela (AWV)
-Módulo de detección de cambios para el Archivo Web de Venezuela
+Módulo de detección de cambios para el Archivo Web de Venezuela.
 
 # Flaskapp
 
 ### [**app.py**](Flaskapp/app.py)
-Archivo principal, es el que debe ser ejecutado para levantar la aplicación
+Archivo principal, es el que debe ser ejecutado para levantar la aplicación.
 
 ### [**changeDetector-backup.py**](Flaskapp/changeDetector-backup.py)
-Versión estable previa almacenada por propósito de mantenimiento
+Versión estable previa almacenada por propósito de mantenimiento.
 
 ### [**changeDetector.py**](Flaskapp/changeDetector.py)
 Versión actual del módulo de detección de cambios.
@@ -16,7 +16,7 @@ Versión actual del módulo de detección de cambios.
 Módulo que permite la captura completa del sitio web en lugar de sólo la visualizada en el rendering original.
 
 ### [**\_\_pycache\_\_**](Flaskapp/__pycache__)
-Elementos de uso general de Python
+Elementos de uso general de Python.
 
 ### [static](Flaskapp/static)
 Imágenes producidas luego de la ejecución de la detección de cambios, se mantienen por interés general, sirven como ejemplo.
