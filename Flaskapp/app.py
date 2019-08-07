@@ -12,8 +12,8 @@ def main():
 def changes():
     old_url = request.form['old_url']
     new_url = request.form['new_url']
-    resultado = changeDetector.change_detector(old_url, new_url, 'diferencia'.upper())
-    return render_template('resultados.html', resultado = resultado)
+    changeDetector.change_detector(old_url, new_url, 'diferencia'.upper())
+    return render_template('resultados.html')
 
 @app.after_request
 def add_header(response):

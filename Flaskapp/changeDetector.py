@@ -4,8 +4,9 @@ import difflib
 import math
 import statistics
 import matplotlib.pyplot as plt; plt.rcdefaults()
-import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import numpy as np
 import os
 import util
 from selenium import webdriver
@@ -34,8 +35,6 @@ def change_detector(p_url, url, caso):
     alloptions.add_argument('headless')
     alloptions.add_argument("--window-size=1920,1080")
 
-    # p_url = "https://www.w3schools.com/"
-    # p_url = 'http://bom.ciens.ucv.ve/dataset/data/20140924152321/'
     browser = webdriver.Chrome(options=alloptions)
     browser.get(p_url)
     p_html = browser.page_source
@@ -43,8 +42,6 @@ def change_detector(p_url, url, caso):
     screenshot = util.fullpage_screenshot(browser, 'static/old_screenshot.png')
     browser.quit()
 
-    # url = "https://www.w3schools.com/"
-    # url = 'http://bom.ciens.ucv.ve/dataset/data/20140924152321/'
     browser = webdriver.Chrome(options=alloptions)
     browser.get(url)
     html = browser.page_source
@@ -56,17 +53,11 @@ def change_detector(p_url, url, caso):
     body = text.find("body")
     p_text = BeautifulSoup(p_html, "lxml")
     p_divs = p_text.find("div")
-    # caso = 'diferencia'.upper()
     salida = ""
-    # alldivs = text.find_all("div")
-    # p_alldivs = p_text.find_all("div")
-    # p_head = text.find("head")
-    # borde = ""
 
     counter = 0
     for item in divs.next_siblings:
         try:
-            # texts.append(str(item.next))
             if counter == 0:
                 unsorted_dicttexts.append({'id': counter, 'value': str(divs)})
                 counter += 1
@@ -74,7 +65,6 @@ def change_detector(p_url, url, caso):
             unsorted_dicttexts.append({'id': counter, 'value': str(item.next)})
             counter += 1
         except AttributeError:
-            # texts.append(str(item))
             if counter == 0:
                 unsorted_dicttexts.append({'id': counter, 'value': str(divs)})
                 counter += 1
@@ -85,7 +75,6 @@ def change_detector(p_url, url, caso):
     counter = 0
     for item in p_divs.next_siblings:
         try:
-            # p_texts.append(str(item.next))
             if counter == 0:
                 p_unsorted_dicttexts.append({'id': counter, 'value': str(p_divs)})
                 counter += 1
@@ -93,7 +82,6 @@ def change_detector(p_url, url, caso):
             p_unsorted_dicttexts.append({'id': counter, 'value': str(item.next)})
             counter += 1
         except AttributeError:
-            # p_texts.append(str(item))
             if counter == 0:
                 p_unsorted_dicttexts.append({'id': counter, 'value': str(p_divs)})
                 counter += 1
@@ -109,7 +97,6 @@ def change_detector(p_url, url, caso):
 
     if len(texts) == len(p_texts):
 
-        # Incluir función que verifica que los bloques están alineados correctamente
         if caso == 'diferencia'.upper():
             for iterator in range(0, len(texts)):
                 if texts[iterator] is None:
@@ -155,17 +142,7 @@ def change_detector(p_url, url, caso):
 
             # Hacer cambio cualitativo también, usando la matriz hablada con Sanoja
             # basada en puerto de visualización de ventana.
-            # Leyenda:
-            # Rojo: significativo
-            # Amarillo: medio
-            # Verde: cambio no significativo
-
-            if cambio_total >= 50:
-                resultado = '¡Cambio significativo! Se debe almacenar la nueva versión\n'
-            elif cambio_peso_80 >= 50 and cambio_total >= 30:
-                resultado = '¡Cambio siginificativo! Se debe almacenar la nueva versión\n'
-            else:
-                resultado = 'Cambio no significativo. La nueva versión no será almacenada\n'
+            # Añadir leyenda de % de cambios a resultados.html
 
             # Aqui se hacen las manipulaciones al codigo para agregar el marco rojo que detalla el div cambiado
             # Si hubo cambios resaltar usando el id que yo le otorgué para la búsqueda
@@ -195,6 +172,10 @@ def change_detector(p_url, url, caso):
                 elif height > 0 and height < 20:
                     barlist[i].set_color('g')
 
+            c_significativo = mpatches.Patch(color='r', label = 'Significativo')
+            c_intermedio = mpatches.Patch(color='y', label = 'Intermedio')
+            c_no_significativo = mpatches.Patch(color='g', label = 'No significativo')
+            plt.legend(handles=[c_significativo, c_intermedio, c_no_significativo], title='Tipo de Cambio', fontsize='small', fancybox=True)
             plt.xticks(y_pos, objects)
             plt.ylabel('% de cambios')
             plt.xlabel('ID de bloques')
@@ -206,7 +187,6 @@ def change_detector(p_url, url, caso):
                     if element2['id'] == element:
                         if 'style' in element2['value']:
                             element2['value'] = element2['value'].replace('style="', 'style="border: 3px solid red; ', 1)
-                                                                # .replace('id-="')
                         else:
                             reemplazo_border = '< ' + ' style="border: 3px solid red;"'
                             element2['value'] = element2['value'].replace('<', reemplazo_border, 1)
@@ -229,19 +209,20 @@ def change_detector(p_url, url, caso):
             alloptions.add_argument('headless')
             alloptions.add_argument("--window-size=1920,1080")
 
+            valores = []
             # Operaciones con el browser
             browser = webdriver.Chrome(options=alloptions)
             url_updated = 'file://'+url2
             browser.get(url_updated)
+            bloques_con_cambios = browser.find_elements_by_xpath('//div[contains(@style, "border: 3px solid red")]')
 
-            # exec asyn
+            for i in range(0, len(bloques_con_cambios)):
+                print(bloques_con_cambios[i].location)
+                print(bloques_con_cambios[i].size)
 
-            # screenshot = browser.save_screenshot('my_screenshot.png')
             screenshot = util.fullpage_screenshot(browser, 'static/new_screenshot.png')
             browser.quit()
             # Fin Screenshot
-
-            return resultado
 
         # else:
             # Otro caso
@@ -301,13 +282,6 @@ def change_detector(p_url, url, caso):
             # Amarillo: medio
             # Verde: cambio no significativo
 
-            if cambio_total >= 50:
-                resultado = '¡Cambio significativo! Se debe almacenar la nueva versión\n'
-            elif cambio_peso_80 >= 50 and cambio_total >= 30:
-                resultado = '¡Cambio siginificativo! Se debe almacenar la nueva versión\n'
-            else:
-                resultado = 'Cambio no significativo. La nueva versión no será almacenada\n'
-
             # Aqui se hacen las manipulaciones al codigo para agregar el marco rojo que detalla el div cambiado
             # Si hubo cambios resaltar usando el id que yo le otorgué para la búsqueda
             reemplazo = '<head>' + '\n' + '<script src="https://code.jquery.com/jquery-3.4.1.js"' \
@@ -381,8 +355,6 @@ def change_detector(p_url, url, caso):
             screenshot = util.fullpage_screenshot(browser, 'static/new_screenshot.png')
             browser.quit()
             # Fin Screenshot
-
-            return resultado
 
         # else:
             # Otro caso
@@ -442,13 +414,6 @@ def change_detector(p_url, url, caso):
             # Amarillo: medio
             # Verde: cambio no significativo
 
-            if cambio_total >= 50:
-                resultado = '¡Cambio significativo! Se debe almacenar la nueva versión\n'
-            elif cambio_peso_80 >= 50 and cambio_total >= 30:
-                resultado = '¡Cambio siginificativo! Se debe almacenar la nueva versión\n'
-            else:
-                resultado = 'Cambio no significativo. La nueva versión no será almacenada\n'
-
             # Aqui se hacen las manipulaciones al codigo para agregar el marco rojo que detalla el div cambiado
             # Si hubo cambios resaltar usando el id que yo le otorgué para la búsqueda
             reemplazo = '<head>' + '\n' + '<script src="https://code.jquery.com/jquery-3.4.1.js"' \
@@ -522,8 +487,6 @@ def change_detector(p_url, url, caso):
             screenshot = util.fullpage_screenshot(browser, 'static/new_screenshot.png')
             browser.quit()
             # Fin Screenshot
-
-            return resultado
 
         # else:
             # Otro caso
