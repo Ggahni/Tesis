@@ -140,10 +140,6 @@ def change_detector(p_url, url, caso):
             cambio_peso_20 = statistics.mean(porcentajes_cambios_ordenados[1]) * 0.2
             cambio_total   = cambio_peso_80 + cambio_peso_20
 
-            # Hacer cambio cualitativo también, usando la matriz hablada con Sanoja
-            # basada en puerto de visualización de ventana.
-            # Añadir leyenda de % de cambios a resultados.html
-
             # Aqui se hacen las manipulaciones al codigo para agregar el marco rojo que detalla el div cambiado
             # Si hubo cambios resaltar usando el id que yo le otorgué para la búsqueda
             reemplazo   = '<head>' + '\n' + '<script src="https://code.jquery.com/jquery-3.4.1.js"' \
@@ -1034,5 +1030,5 @@ def change_detector(p_url, url, caso):
 
         # else:
             # Otro caso
-            
+
     # bom.ciens.ucv.ve/dataset
